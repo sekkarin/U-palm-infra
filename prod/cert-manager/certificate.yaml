@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: warering-cert
+  namespace: default
+spec:
+  dnsNames:
+    - warering.online
+  secretName: warering-secret-tls
+  issuerRef:
+    name: letsencrypt-nginx
+    kind: Issuer

@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: warering-client
+  template:
+    metadata:
+      labels:
+        app: warering-client
+    spec:
+      containers:
+        - name: warering-client
+          image: sekkarin/warering-client:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: VITE_EMQX_DOMAIN
+              valueFrom:
+                secretKeyRef:
+                  name: client-warering-secrets
+                  key: VITE_EMQX_DOMAIN
+            - name: VITE_API_DOMAIN
+              valueFrom:
+                secretKeyRef:
+                  name: client-warering-secrets
+                  key: VITE_API_DOMAIN
+            - name: VITE_EMQX_PROTOCAL
+              valueFrom:
+                secretKeyRef:
+                  name: client-warering-secrets
+                  key: VITE_EMQX_PROTOCAL
+            - name: VITE_EMQX_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: client-warering-secrets
+                  key: VITE_EMQX_HOST
+          volumeMounts:
+            - name: env-config
+              mountPath: /usr/share/nginx/html/.env
+              subPath: .env
+              readOnly: true
+      volumes:
+      - name: env-config
+        secret:
+          secretName: client-warering-secrets
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: client-srv
+spec:
+  selector:
+    app: warering-client
+
+  ports:
+    - name: client
+      protocol: TCP
+      port: 80
+      targetPort: 80
+# kubectl set image deployment client-depl warering-client=sekkarin/warering-client:latest --record

@@ -1,0 +1,168 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: api-warering-deployment
+  labels:
+    app: api-warering
+spec:
+  selector:
+    matchLabels:
+      app: api-warering
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: api-warering
+    spec:
+      containers:
+        - name: api-warering
+          image: sekkarin/warering-api
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: DATABASE_URL
+            - name: PORT
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: PORT
+            - name: JWT_ACCESS_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: JWT_ACCESS_SECRET
+            - name: JWT_REFRESH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: JWT_REFRESH_SECRET
+            - name: EXPIRES_IN_REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: EXPIRES_IN_REFRESH_TOKEN
+            - name: EXPIRES_IN_ACCESS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: EXPIRES_IN_ACCESS_TOKEN
+            - name: EXPIRES_IN_COOKIES_REFRESH_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: EXPIRES_IN_COOKIES_REFRESH_TOKEN
+            - name: EMQX_API
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: EMQX_API
+            - name: EMQX_DASHBOARD_ADMIN_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: EMQX_DASHBOARD_ADMIN_USERNAME
+            - name: EMQX_DASHBOARD_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: EMQX_DASHBOARD_ADMIN_PASSWORD
+            - name: EMAIL_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: EMAIL_AUTH
+            - name: PASS_AUTH
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: PASS_AUTH
+            - name: SECRET_VERIFY_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: SECRET_VERIFY_EMAIL
+            - name: SECRET_RESET_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: SECRET_RESET_PASS
+            - name: EXPIRES_IN_EMAIL_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: EXPIRES_IN_EMAIL_TOKEN
+            - name: EXPIRES_IN_RESET_PASS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: EXPIRES_IN_RESET_PASS_TOKEN
+            - name: SECRET_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: SECRET_API_KEY
+            - name: ALLOWED_ORIGINS
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: ALLOWED_ORIGINS
+            - name: CLIENT_URL
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: CLIENT_URL
+            - name: AWS_S3_BUCKET_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: AWS_S3_BUCKET_NAME
+            - name: AWS_S3_BUCKET_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: AWS_S3_BUCKET_REGION
+            - name: AWS_S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: AWS_S3_ACCESS_KEY
+            - name: AWS_S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: AWS_S3_SECRET_KEY
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: REDIS_URL
+            - name: REDIS_PORT
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: REDIS_PORT
+            - name: NODE_ENV
+              valueFrom:
+                secretKeyRef:
+                  name: api-warering-secrets
+                  key: NODE_ENV
+            - name: TZ
+              value: "Asia/Bangkok"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: api-warering-srv
+  namespace: default
+spec:
+  selector:
+    app: api-warering
+  ports:
+    - name: app
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
+# kubectl scale --replicas=0 deployment api-warering-deployment

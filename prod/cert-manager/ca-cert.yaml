@@ -1,0 +1,10 @@
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: ca-issuer
+  # namespace: sandbox
+spec:
+  ca:
+    secretName: warering-secret-tls
+    # crlDistributionPoints:
+    # - "http://example.com"
